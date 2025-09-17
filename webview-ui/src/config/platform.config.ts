@@ -1,3 +1,22 @@
+/**
+ * 平台配置入口文件。
+ *
+ * 功能：
+ * 1. 根据编译期注入的 __PLATFORM__ 常量，从 platform-configs.json 选择对应配置。
+ * 2. 为 postMessage、消息编码/解码、UI 开关等行为提供统一的 PLATFORM_CONFIG。
+ * 3. 业务层通过 PlatformProvider 使用这些配置，在 VSCode、Standalone 等宿主环境下保持一致。
+ *
+ * 关于 encodeMessage / decodeMessage：
+ * - 此处只负责选择策略（"none" | "json"）。
+ * - "none" → 原样返回，不做处理。
+ * - "json" → 调用调用方传入的 encoder/decoder 函数，本身不实现具体的 JSON.stringify / JSON.parse。
+ * - 因此，真正的序列化与反序列化逻辑由业务层决定。
+ *
+ * 示例：
+ *   PLATFORM_CONFIG.encodeMessage(msg, m => JSON.stringify(m))
+ *   PLATFORM_CONFIG.decodeMessage(raw, json => JSON.parse(json))
+ */
+
 import platformConfigs from "./platform-configs.json"
 
 export interface PlatformConfig {
